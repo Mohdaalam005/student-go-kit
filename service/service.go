@@ -10,11 +10,18 @@ import (
 type Service interface {
 	CreateStudent(ctx context.Context, student repository.StudentRequest) (repository.StudentResponse, error)
 	GetAllStudent(ctx context.Context) ([]repository.Student, error)
+	GetStudentById(ctx context.Context, id int) (repository.Student, error)
 }
 
 type serivce struct {
 	repository repository.Repository
 	log        logrus.Logger
+}
+
+// GetStudentById implements Service
+func ( s *serivce) GetStudentById(ctx context.Context, id int) (repository.Student, error) {
+	student , _ := s.repository.GetStudentById(ctx,id)
+	return student ,nil
 }
 
 // GetAllStudent implements Service

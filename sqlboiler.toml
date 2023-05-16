@@ -6,7 +6,7 @@ name = "models"
 
 # The database connection information
 [psql]
-dbname = "gokit"
+dbname = "go_lang"
 host = "localhost"
 user = "postgres"
 pass = "root"
