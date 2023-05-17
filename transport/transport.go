@@ -28,24 +28,60 @@ func NewHTTPServer(ctx context.Context, endpoint endpoints.Endpoints) http.Handl
 		encodeResponse,
 	))
 	route.Methods("GET").Path("/students/{id}").Handler(httptransport.NewServer(
-		endpoint.GetAllStudent,
+		endpoint.GetStudentById,
 		decodeGetStudentById,
+		encodeResponse,
+	))
+	route.Methods("DELETE").Path("/students/{id}").Handler(httptransport.NewServer(
+		endpoint.DeleteStudentById,
+		decodeDeleteStudentById,
+		encodeResponse,
+	))
+	route.Methods("PUT").Path("/students/{id}").Handler(httptransport.NewServer(
+		endpoint.UpdateStudent,
+		decodeUpdateStudent,
 		encodeResponse,
 	))
 
 	return route
 
 }
-func decodeGetStudentById(ctx context.Context, r *http.Request) (interface{}, error) {
-	idStr, _ := mux.Vars(r)["id"]
 
-	// Parse the student ID to an int64
-	id, err := strconv.Atoi(idStr)
+func decodeUpdateStudent(ctx context.Context, r *http.Request) (interface{}, error) {
+	var student models.Student
+	vars := mux.Vars(r)
+
+	id, _ := strconv.Atoi(vars["id"])
+
+	json.NewDecoder(r.Body).Decode(&student)
+	student.ID = id
+	return student, nil
+
+}
+
+func decodeDeleteStudentById(ctx context.Context, r *http.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
 	if err != nil {
 		return nil, err
 	}
+	student := &models.Student{
+		ID: id,
+	}
 
-	// Create a student object with the parsed ID
+	return student, nil
+}
+
+func decodeGetStudentById(ctx context.Context, r *http.Request) (interface{}, error) {
+	vars := mux.Vars(r)
+
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		return nil, err
+	}
 	student := &models.Student{
 		ID: id,
 	}

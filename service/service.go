@@ -11,6 +11,8 @@ type Service interface {
 	CreateStudent(ctx context.Context, student repository.StudentRequest) (repository.StudentResponse, error)
 	GetAllStudent(ctx context.Context) ([]repository.Student, error)
 	GetStudentById(ctx context.Context, id int) (repository.Student, error)
+	UpdateStudent(ctx context.Context, student repository.Student, studentId int) (repository.Student, error)
+	DeleteStudentById(ctx context.Context, id int) error
 }
 
 type serivce struct {
@@ -18,10 +20,35 @@ type serivce struct {
 	log        logrus.Logger
 }
 
+// UpdateStudent implements Service
+func ( s *serivce) UpdateStudent(ctx context.Context, student repository.Student, studentId int) (repository.Student, error) {
+	updteStudent ,err := s.repository.UpdateStudent(ctx,student, studentId);
+	if err != nil {
+		return  repository.Student{}, err
+	}
+	return updteStudent ,nil
+}
+
+
+// DeleteStudentById implements Service
+func (s *serivce) DeleteStudentById(ctx context.Context, id int) error {
+	s.repository.DeleteStudentById(ctx, id)
+	return nil
+}
+
 // GetStudentById implements Service
-func ( s *serivce) GetStudentById(ctx context.Context, id int) (repository.Student, error) {
-	student , _ := s.repository.GetStudentById(ctx,id)
-	return student ,nil
+func (s *serivce) GetStudentById(ctx context.Context, id int) (repository.Student, error) {
+	student, err := s.repository.GetStudentById(ctx, id)
+	if err != nil {
+		s.log.Info("error getting students", err)
+
+	}
+	return repository.Student{
+		ID:     student.ID,
+		Name:   student.Name,
+		Gender: student.Gender,
+		Dob:    student.Dob,
+	}, nil
 }
 
 // GetAllStudent implements Service
