@@ -17,7 +17,7 @@ import (
 )
 
 func main() {
-	dsn := "dbname='gokit' host='localhost' user='postgres' password='root' sslmode=disable"
+	dsn := "dbname='go_lang' host='localhost' user='postgres' password='root' sslmode=disable"
 
 	db, err := sql.Open("postgres", dsn)
 	log := logrus.New()
