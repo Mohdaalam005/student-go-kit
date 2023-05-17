@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"net/http"
 	"os"
 
@@ -40,7 +39,7 @@ func main() {
 
 	errs := make(chan error)
 
-	fmt.Println("listening on port", 8080)
+	log.Info("listening on port", 8080)
 	handler := transport.NewHTTPServer(ctx, endpoints)
 	errs <- http.ListenAndServe(":8080", handler)
 
